@@ -70,25 +70,25 @@ print("\n=== Total return by end of period ===")
 print(cum_returns.iloc[-1].sort_values(ascending=False))
 
 # --- Plot cumulative returns ---
-fig, ax = plt.subplots(figsize=(12, 6))
+# fig, ax = plt.subplots(figsize=(12, 6))
 
-for ticker in ['NVDA', 'MU', 'MSFT']:
-    # cum_returns.index: x-axis, cum_returns[ticker]: y-axis
-    ax.plot(cum_returns.index, cum_returns[ticker], label=ticker)
+# for ticker in ['NVDA', 'MU', 'MSFT']:
+#     # cum_returns.index: x-axis, cum_returns[ticker]: y-axis
+#     ax.plot(cum_returns.index, cum_returns[ticker], label=ticker)
 
-ax.axhline(y=0, color='black', linewidth=0.8, linestyle='--')
-ax.set_title('Cumulative Returns: NVDA / MU / MSFT')
-ax.set_ylabel('Cumulative Return')
-ax.set_xlabel('Date')
-ax.legend()
+# ax.axhline(y=0, color='black', linewidth=0.8, linestyle='--')
+# ax.set_title('Cumulative Returns: NVDA / MU / MSFT')
+# ax.set_ylabel('Cumulative Return')
+# ax.set_xlabel('Date')
+# ax.legend()
 
-# Order: customize → tight_layout → savefig → show
-plt.tight_layout()
-plt.savefig('data/returns_chart.png', dpi=150) #dpi: resolution (dots per inch)
-plt.show()
+# # Order: customize → tight_layout → savefig → show
+# plt.tight_layout()
+# plt.savefig('data/returns_chart.png', dpi=150) #dpi: resolution (dots per inch)
+# plt.show()
 
-print("\n=== Volatility (std of daily returns) ===")
-print(returns.std().sort_values(ascending=False))
+# print("\n=== Volatility (std of daily returns) ===")
+# print(returns.std().sort_values(ascending=False))
 
 # --- Interpretation: Cumulative Returns & Volatility (2024–2026) ---
 # Among the three semiconductors and tech stocks analyzed, NVDA demonstrates
@@ -105,4 +105,15 @@ print(returns.std().sort_values(ascending=False))
 # volatility relative to pure-play semiconductor names like NVDA and MU.
 # Key takeaway: in this period, higher volatility (NVDA) was rewarded with
 # higher returns, illustrating the classic risk-return tradeoff in equity markets.
+
+
+# --- Auditing the three tickers ---
+for name, df in [('NVDA', nvda), ('MU', mu), ('MSFT', msft)]:
+    print(f"\n=== {name} ===")
+    close_col = df['Close'].iloc[2:].astype(float)  # skip MultiIndex header rows
+    print(df.info())                        # non-null counts + dtypes
+    print(df.isnull().sum())                # NaN count per column
+    print(df.isnull().sum().sum())          # total NaN across entire DataFrame
+    print(f"Any zero prices: {(close_col == 0).any()}")
+    print(f"Any negative prices: {(close_col < 0).any()}")
 
