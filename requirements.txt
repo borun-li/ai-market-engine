@@ -11,12 +11,14 @@ idna==3.11
 kiwisolver==1.4.9
 matplotlib==3.10.8
 multitasking==0.0.12
+narwhals==2.17.0
 numpy==2.4.2
 packaging==26.0
 pandas==3.0.1
 peewee==4.0.0
 pillow==12.1.1
 platformdirs==4.9.2
+plotly==6.6.0
 protobuf==6.33.5
 pycparser==3.0
 pyparsing==3.3.2
