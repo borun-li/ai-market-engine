@@ -9,7 +9,7 @@ Output: derived metric DataFrames. No side effects.
 import pandas as pd
 import numpy as np
 
-__all__ = ['compute_returns', 'compute_rolling_vol', 'compute_summary_stats']
+__all__ = ['compute_returns', 'compute_rolling_vol', 'compute_summary_stats', 'compute_parkinson_vol']
 
 
 def compute_returns(close: pd.DataFrame) -> pd.DataFrame:
@@ -57,3 +57,22 @@ def compute_summary_stats(returns: pd.DataFrame) -> pd.DataFrame:
     })
 
     return stats
+
+def compute_parkinson_vol(high: pd.DataFrame, low: pd.DataFrame, window: int = 20) -> pd.DataFrame:
+    """Compute rolling Parkinson volatility using High/Low prices.
+
+    More efficient than Close-to-Close std — captures intraday price range.
+    Formula: sqrt( (1 / 4·ln2) · rolling_mean( ln(High/Low)² ) )
+
+    Args:
+        high:   DataFrame of daily High prices, one column per ticker.
+        low:    DataFrame of daily Low prices, one column per ticker.
+        window: Rolling window in trading days. Default is 20.
+
+    Returns:
+        DataFrame of rolling Parkinson vol values (same shape as high/low).
+    """
+    log_hl_sq = np.log(high / low) ** 2
+    factor    = 1 / (4 * np.log(2))
+    return np.sqrt(factor * log_hl_sq.rolling(window=window).mean())
+

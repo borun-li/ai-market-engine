@@ -67,3 +67,24 @@ Outputs:
 | NVDA   | +0.32%            | 51.1%          | -36.9%       | +287.4%      |
 | MU     | +0.32%            | 57.4%          | -57.6%       | +249.2%      |
 | MSFT   | +0.07%            | 22.2%          | -23.7%       | +32.3%       |
+
+## Findings
+
+**Parkinson vs Close-to-Close Volatility**
+
+|        | Close-to-Close Vol | Parkinson Vol | Ratio |
+|--------|:-----------------:|:-------------:|:-----:|
+| NVDA   | 3.06%             | 2.44%         | 0.80  |
+| MU     | 3.45%             | 2.50%         | 0.73  |
+| MSFT   | 1.33%             | 1.11%         | 0.84  |
+
+Parkinson volatility (using daily High/Low range) consistently estimates lower vol than
+Close-to-Close std. The gap measures overnight gap risk — price jumps between yesterday's
+close and today's open that are invisible to intraday vol estimators.
+
+MU has the lowest ratio (0.73), meaning ~27% of its measured volatility comes from
+overnight gaps driven by after-hours memory pricing updates and earnings surprises.
+MSFT's higher ratio (0.84) reflects mega-cap stability with fewer overnight dislocations.
+
+**Implication:** For overnight hedging strategies, Close-to-Close vol is the appropriate
+risk measure. For intraday strategies, Parkinson is more accurate.
