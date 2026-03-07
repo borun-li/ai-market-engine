@@ -11,7 +11,7 @@ import pandas as pd
 from pathlib import Path
 from src.data_cleaning import clean_data
 from src.analysis import compute_returns, compute_rolling_vol, compute_summary_stats, compute_parkinson_vol
-from src.visualization import plot_performance
+from src.visualization import plot_performance, plot_interactive
 from config import TICKERS, START_DATE, END_DATE
 
 # --- Step 1: Load and clean ---
@@ -41,6 +41,7 @@ rolling_vol = compute_rolling_vol(returns)
 
 # --- Step 3: Visualize ---
 plot_performance(cum_returns, rolling_vol)
+plot_interactive(cum_returns)
 print('Pipeline complete.')
 
 # --- Step 4: Summary stats ---

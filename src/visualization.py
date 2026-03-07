@@ -66,3 +66,26 @@ def plot_performance(
     fig.savefig(output_path, dpi=300, bbox_inches='tight')
     plt.close(fig)
     print(f"Chart saved to {output_path}")
+
+
+def plot_interactive(
+    cum_returns: pd.DataFrame,
+    output_path: str = 'charts/interactive.html'
+) -> None:
+    """Generate and save an interactive cumulative returns chart as HTML.
+
+    Args:
+        cum_returns:  DataFrame of cumulative returns (one column per ticker).
+        output_path:  File path to save the HTML. Default: charts/interactive.html.
+    """
+    Path(output_path).parent.mkdir(parents=True, exist_ok=True)
+
+    fig = px.line(
+        cum_returns,
+        labels={'value': 'Cumulative Return', 'index': 'Date', 'variable': 'Ticker'},
+        title='Cumulative Returns — Interactive',
+        color_discrete_map=COLORS,
+    )
+    fig.update_layout(legend_title_text='Ticker')
+    fig.write_html(output_path)
+    print(f"Interactive chart saved to {output_path}")
