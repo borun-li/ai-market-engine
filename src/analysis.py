@@ -7,8 +7,9 @@ Output: derived metric DataFrames. No side effects.
 """
 
 import pandas as pd
+import numpy as np
 
-__all__ = ['compute_returns', 'compute_rolling_vol']
+__all__ = ['compute_returns', 'compute_rolling_vol', 'compute_summary_stats']
 
 
 def compute_returns(close: pd.DataFrame) -> pd.DataFrame:
@@ -34,3 +35,25 @@ def compute_rolling_vol(returns: pd.DataFrame, window: int = 20) -> pd.DataFrame
         DataFrame of rolling std values. First (window-1) rows will be NaN.
     """
     return returns.rolling(window=window).std()
+
+
+def compute_summary_stats(returns: pd.DataFrame) -> pd.DataFrame:
+    """Compute per-ticker summary statistics.
+
+    Args:
+        returns: DataFrame of daily returns (output of compute_returns).
+
+    Returns:
+        DataFrame with one row per ticker and columns:
+        mean_daily_return, annualized_vol, max_drawdown, total_return.
+    """
+    cum = (1 + returns).cumprod()
+
+    stats = pd.DataFrame({
+        'mean_daily_return': returns.mean(),
+        'annualized_vol':    returns.std() * np.sqrt(252),
+        'max_drawdown':      (cum / cum.cummax() - 1).min(),
+        'total_return':      cum.iloc[-1] - 1,
+    })
+
+    return stats

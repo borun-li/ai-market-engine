@@ -10,15 +10,9 @@ To add a new ticker, change TICKERS — nothing else needs to change.
 import pandas as pd
 from pathlib import Path
 from src.data_cleaning import clean_data
-from src.analysis      import compute_returns, compute_rolling_vol
+from src.analysis      import compute_returns, compute_rolling_vol, compute_summary_stats
 from src.visualization import plot_performance
-
-# --- Configuration — single source of truth ---
-# This is the ONLY place tickers, dates, or paths are defined.
-# Adding 'TSLA' here is the only change needed to include a new stock.
-TICKERS    = ['NVDA', 'MU', 'MSFT']
-START_DATE = '2024-01-01'
-END_DATE   = '2026-01-01'
+from config import TICKERS, START_DATE, END_DATE
 
 # --- Step 1: Load and clean ---
 close_prices = {}
@@ -34,8 +28,13 @@ close = pd.DataFrame(close_prices)
 # --- Step 2: Compute metrics ---
 returns = compute_returns(close)
 cum_returns = (1+returns).cumprod()-1
-rolling_vol = compute_rolling_vol(close)
+rolling_vol = compute_rolling_vol(returns)
 
 # --- Step 3: Visualize ---
 plot_performance(cum_returns, rolling_vol)
 print('Pipeline complete.')
+
+# --- Step 4: Summary stats ---
+stats = compute_summary_stats(returns)
+print('\n--- Summary Statistics ---')
+print(stats.to_string())
